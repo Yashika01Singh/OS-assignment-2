@@ -8,7 +8,7 @@
 
 
 void s1_sigterm_handler (int signum, siginfo_t *info, void *ptr){
-   //printf("\n... Process terminated ... %s" ,info.si_value.int);
+   printf("\n... Process terminated ... %s" ,info.si_value.int);
     union sigval value = info->si_value;
   printf("Got a signal from %d. The message was: %s\n", info->si_pid, (char*) value.sival_ptr);
 }
@@ -28,14 +28,7 @@ int main()
 
    if(pid==0){
          
-      FILE *f = fopen("child ID", "w");
-      if (f == NULL)
-      {
-        printf("Error opening file!\n");
-        return 1;
-      }
-
-      fprintf(f, "%d", getpid());
+      
           printf("child S1 %d  \n", getpid() );
          struct sigaction act;
          act.sa_sigaction = s1_sigterm_handler;
@@ -57,15 +50,8 @@ int main()
          exit(0);
    }   
    
-   wait(NULL);
-   FILE *f = fopen("child ID", "r");
-   if (f == NULL)
-    {
-        printf("Error opening file!\n");
-        return 1;
-    }
-
-   fscanf(f, "%d", &ultim);
+   
+   ultim = pid;
    
     
     
@@ -105,6 +91,7 @@ int main()
            
       }
       //parent process
+      
       wait(NULL);
       wait(NULL);
       

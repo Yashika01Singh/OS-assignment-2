@@ -5,7 +5,7 @@
 
 pid_t ID;
 void s1_siglarm_handler (){
-    printf("\nhii im a alarm %d \n" , ID);
+    printf("\nhii im a alarm for E1%d \n" , ID);
     int rand = 5050505;
     union sigval value;
     value.sival_int = rand;
