@@ -4,14 +4,13 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <sys/wait.h>
-
+#include <string.h>
 
 
 void s1_sigterm_handler (int signum, siginfo_t *info, void *ptr){
-   
-    union sigval value = info->si_value;
-     printf("\n... Process terminated ... %d" ,value.sival_int);
-  printf("Got a signal from %d. The message was: %s\n", info->si_pid, (char*) value.sival_ptr);
+  
+   printf("Value passed %d " , info->si_value.sival_int);
+  printf("Terminator called:\n");
 }
 
 int main()
@@ -36,10 +35,17 @@ int main()
          act.sa_flags = SA_SIGINFO;
          sigaction(SIGTERM, &act, 0);
          int i=0;
-         while(1){
+	
+    	union sigval value;
+
+	 char *msg = "HIII IT WORKED";
+	value.sival_int = 1000;
+	 while(1){
             printf(" %d stopp " , i);
             int a =sleep(1);
             printf("%d \n" ,a);
+
+	    sigqueue(getpid() , SIGTERM,value );
             i++;           
 
             
@@ -90,8 +96,9 @@ int main()
       }
       //parent process
       
-     
-      
+	wait(NULL);     
+ 	wait(NULL);
+   	wait(NULL);	
       printf("parent process finished");
       
    
