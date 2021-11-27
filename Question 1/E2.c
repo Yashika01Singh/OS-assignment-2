@@ -16,7 +16,7 @@ void s2_siglarm_handler (){
 
 int main (int argc , char *argv[]){
     ID = strtol(argv[1] , NULL , 10 );
-    printf("E2 called with ID %d and its ID is %d\n" , ID , getpid());
+    //printf("E2 called with ID %d and its ID is %d\n" , ID , getpid());
     struct sigaction act;
     struct itimerval timer;
     

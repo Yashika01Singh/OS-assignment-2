@@ -36,16 +36,13 @@ int main()
          sigaction(SIGTERM, &act, 0);
          int i=0;
 	
-    	union sigval value;
-
-	 char *msg = "HIII IT WORKED";
-	value.sival_int = 1000;
+    	
 	 while(1){
-            printf(" %d stopp " , i);
+            
             int a =sleep(1);
-            printf("%d \n" ,a);
+            printf("child is sleeping\n");
 
-	    sigqueue(getpid() , SIGTERM,value );
+	    
             i++;           
 
             

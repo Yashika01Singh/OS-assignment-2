@@ -1,0 +1,95 @@
+diff --git a/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl b/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
+index f6b57799c..8fd896812 100644
+--- a/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -369,7 +369,7 @@
+ 445	common	landlock_add_rule	sys_landlock_add_rule
+ 446	common	landlock_restrict_self	sys_landlock_restrict_self
+ 447	common	memfd_secret		sys_memfd_secret
+-
++448	common	2d_memcpy		sys_2d_memcpy
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+ # in x32 as compared to native x86_64.  These syscalls have numbers 512-547.
+diff --git a/build/linux-5.14.3/include/linux/syscalls.h b/build/linux-5.14.3/include/linux/syscalls.h
+index 11876b59f..a2b4151b8 100644
+--- a/build/linux-5.14.3/include/linux/syscalls.h
++++ b/build/linux-5.14.3/include/linux/syscalls.h
+@@ -1264,7 +1264,7 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
+ 			unsigned long prot, unsigned long flags,
+ 			unsigned long fd, unsigned long pgoff);
+ asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
+-
++asmlinkage long sys_2d_memcpy(int* src, int dest, int m , int n);
+ 
+ /*
+  * Not a real system call, but a placeholder for syscalls which are
+diff --git a/build/linux-5.14.3/kernel/sys.c b/build/linux-5.14.3/kernel/sys.c
+index dad8060fa..9fe26b470 100644
+--- a/build/linux-5.14.3/kernel/sys.c
++++ b/build/linux-5.14.3/kernel/sys.c
+@@ -210,6 +210,20 @@ SYSCALL_DEFINE1(hello_world, char*, msg)
+ 	return 0;
+ 
+ }
++SYSCALL_DEFINE4(2d_memcpy, int*, src, int*, dest, int, m, int, n){
++	int i;
++	int j;
++	printk(KERN_INFO "SYSTEM call executing\n");
++	int buff;
++	for(i=0 ; i<m ; i++)
++		for(j=0 ; j<n ; j++){
++			if(copy_from_user(&buff , *((src+i*n)+j) , sizeof(int)))
++				return -EFAULT;
++			if(copy_to_user(*((dest+i*n)+j) , &buf , sizeof(int)))
++				return -EFAULT;
++			return 0;
++		}
++}
+ SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
+ {
+ 	struct task_struct *g, *p;
+diff --git a/foo.txt b/foo.txt
+deleted file mode 100644
+index 9e7f3324e..000000000
+--- a/foo.txt
++++ /dev/null
+@@ -1,38 +0,0 @@
+-diff --git a/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl b/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
+-index f6b57799c..8fd896812 100644
+---- a/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
+-+++ b/build/linux-5.14.3/arch/x86/entry/syscalls/syscall_64.tbl
+-@@ -369,7 +369,7 @@
+- 445	common	landlock_add_rule	sys_landlock_add_rule
+- 446	common	landlock_restrict_self	sys_landlock_restrict_self
+- 447	common	memfd_secret		sys_memfd_secret
+--
+-+448	common	2d_memcpy		sys_2d_memcpy
+- #
+- # Due to a historical design error, certain syscalls are numbered differently
+- # in x32 as compared to native x86_64.  These syscalls have numbers 512-547.
+-diff --git a/build/linux-5.14.3/kernel/sys.c b/build/linux-5.14.3/kernel/sys.c
+-index dad8060fa..9fe26b470 100644
+---- a/build/linux-5.14.3/kernel/sys.c
+-+++ b/build/linux-5.14.3/kernel/sys.c
+-@@ -210,6 +210,20 @@ SYSCALL_DEFINE1(hello_world, char*, msg)
+- 	return 0;
+- 
+- }
+-+SYSCALL_DEFINE4(2d_memcpy, int*, src, int*, dest, int, m, int, n){
+-+	int i;
+-+	int j;
+-+	printk(KERN_INFO "SYSTEM call executing\n");
+-+	int buff;
+-+	for(i=0 ; i<m ; i++)
+-+		for(j=0 ; j<n ; j++){
+-+			if(copy_from_user(&buff , *((src+i*n)+j) , sizeof(int)))
+-+				return -EFAULT;
+-+			if(copy_to_user(*((dest+i*n)+j) , &buf , sizeof(int)))
+-+				return -EFAULT;
+-+			return 0;
+-+		}
+-+}
+- SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
+- {
+- 	struct task_struct *g, *p;
