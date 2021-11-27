@@ -18,6 +18,7 @@ int main (int argc , char *argv[]){
     printf("E2 called with ID %d and its ID is %d\n" , ID , getpid());
     
     signal(SIGALRM , s2_siglarm_handler);
+    /*
     struct itimerval delay;
  int ret;
 
@@ -31,7 +32,7 @@ int main (int argc , char *argv[]){
  return 0;
  }
 
-    
-    
+    */
+    kill(getpid(), 14);
     return 0;
 }
