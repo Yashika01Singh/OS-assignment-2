@@ -813,6 +813,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
 
 	curr->vruntime += calc_delta_fair(delta_exec, curr);
 	update_min_vruntime(cfs_rq);
+	
 
 	if (entity_is_task(curr)) {
 		struct task_struct *curtask = task_of(curr);
@@ -4291,7 +4292,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
 	if (!curr)
 		__enqueue_entity(cfs_rq, se);
 	se->on_rq = 1;
-
+	
 	/*
 	 * When bandwidth control is enabled, cfs might have been removed
 	 * because of a parent been throttled but cfs->nr_running > 1. Try to
@@ -7222,8 +7223,9 @@ again:
 		 * forget we've ever seen it.
 		 */
 		if (curr) {
-			if (curr->on_rq)
+			if (curr->on_rq){
 				update_curr(cfs_rq);
+				curr->vruntime+=curr->added_delay;}
 			else
 				curr = NULL;
 

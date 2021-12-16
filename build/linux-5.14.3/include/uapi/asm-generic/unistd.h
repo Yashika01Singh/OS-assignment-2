@@ -876,10 +876,12 @@ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
 #ifdef __ARCH_WANT_MEMFD_SECRET
 #define __NR_memfd_secret 447
 __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+#define __NR_add_delay 448
+__SYSCALL(__NR_add_delay, sys_add_delay)
 #endif
 
 #undef __NR_syscalls
-#define __NR_syscalls 448
+#define __NR_syscalls 449
 
 /*
  * 32 bit systems traditionally used different
