@@ -13,47 +13,49 @@ int main (int argc , char *argv[]){
 
 	//Recieving message with queue
 	
-	char str[10];
+	char str[5][10];
 	mknod( "myfifo" , S_IFIFO | 0666 , 0);
+	mknod( "feedback" , S_IFIFO | 0666,0);
+	int num, fd, feedback;
 	
-	int num, fd;
-	fd = open( "myfifo" , O_RDONLY) ;
+	
 	char m[2];	
 	while(1){
-	do{
-		if((num=read(fd , str , 10)) == -1) 
+	fd = open("myfifo" , O_RDONLY);	
+		
+		memset(str , 0 , sizeof(str) );
+		if((num=read(fd , str , sizeof(str))) == -1) 
 				perror("read");
 		else{
-		m[0] = str[5];
-		m[1]= str[6];
+			if(strcmp(str[0],"end") == 0){
+				//all strings recieved
+				return 0;}
+			for(int j=0 ; j<5 ;j++){
+			m[0] = str[j][5];
+			m[1]= str[j][6];
 			
-		printf("Recieved %s with id %c%c \n" , str, m[0] , m[1] );
-
+			printf("Recieved %s with id %c%c \n" , str[j], m[0] , m[1] );
+			}
 		}
+		
+	
+	feedback = open("feedback" , O_WRONLY);
+	printf("sending confirmation\n");
+	if(write(feedback, m , 2) == -1)
+	
+	perror("write");
+	
+	close(feedback);
+	close(fd);
+	}
 	
 
-	}while(num>0);
 	
-	close(fd);
-	fd=open("myfifo" , O_WRONLY);
 	
-	if(write(fd , m , 2) == -1)
-		perror("write");
-	
-	close(fd);
-	fd = open("myfifo" , O_RDONLY);
-	}
 	
 return 0;
 
 }
 
 	
-/*
 
-   for(int i=0 ; i<50 ; i++)
-       printf("%d. %s \n" , i , array[i]);	   
-    
-    
-    return 0;
-}*/

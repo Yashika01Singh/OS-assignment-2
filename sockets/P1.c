@@ -57,7 +57,8 @@ int main (int argc , char *argv[]){
 			perror("send");
 			exit(-1);
 		}
-
+		
+		
 		if( (i+1) % 5 == 0) {
 			printf("waiting for confirmation \n" );
 			//reciene from P2/server
@@ -84,12 +85,4 @@ int main (int argc , char *argv[]){
 return 0;
 }
 
-	
-/*
 
-   for(int i=0 ; i<50 ; i++)
-       printf("%d. %s \n" , i , array[i]);	   
-    
-    
-    return 0;
-}*/

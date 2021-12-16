@@ -40,7 +40,7 @@ int main (int argc , char *argv[]){
 		perror("ftok");
 		exit(1);
 	}
-	if ( (  sendid =  msgget (sendkey , 0644 ) ) == -1  || ( getid = msgget(getkey , 0644 )) == -1)
+	if ( (  sendid =  msgget (sendkey , 0644 | IPC_CREAT ) ) == -1  || ( getid = msgget(getkey , 0644 | IPC_CREAT )) == -1)
 		{
 			perror("msgget");
 		exit(1);}
@@ -76,9 +76,16 @@ int main (int argc , char *argv[]){
 			}
 		}
 	}
-		while(1){
-		sleep(1);}
-return 0;
+	//send terminating message to P2
+	strncpy(buf.message[0] ,"end" , 4);
+	if( msgsnd(sendid , &buf , sizeof(buf.message) ,0 ) == -1 ){
+		perror("msgsnd");
+		exit(1);}
+
+	if(msgctl (getid , IPC_RMID , NULL ) == -1 || msgctl (sendid,IPC_RMID , NULL ) == -1) {
+		perror("mdgctl");
+		exit(1);}
+	return 0;
 }
 
 	

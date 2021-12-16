@@ -56,9 +56,8 @@ int main (int argc , char *argv[]){
 		m[1]= buffer[6];
 		if(ret==0){
 			close(rem);
-			return(1);}
+			return (0);}	
 		printf("Recieved %s with id %c%c \n" , buffer, m[0] , m[1] );
-		
 		//recieved 5 string send back confirmation
 		if(i%5==0){
 		printf("sending signal back to client \n");
@@ -66,19 +65,11 @@ int main (int argc , char *argv[]){
 		       perror("send") ;
 	       		}
 		}	
-		}
-		
+		}		
 }
 return 0;
 
 }
 
 	
-/*
 
-   for(int i=0 ; i<50 ; i++)
-       printf("%d. %s \n" , i , array[i]);	   
-    
-    
-    return 0;
-}*/
